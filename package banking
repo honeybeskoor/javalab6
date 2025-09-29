@@ -1,0 +1,137 @@
+package banking;
+
+	public class InsufficientBalanceException extends Exception
+	{
+	public InsufficientBalanceException(String message)
+	{
+	super(message);
+	}
+}
+
+package banking;
+
+public class Account{
+   private String accountNo;
+   private String name;
+   private double balance;
+
+    public Account(String accountNo,String name,double balance)
+    {
+       this.accountNo = accountNo;
+       this.name = name;
+       this.balance = balance;
+  }
+
+    public void deposit(double amount)
+    {
+        if(amount > 0)
+        {
+         balance += amount;
+            System.out.println("Deposited"+ amount);
+       }
+        else
+        {
+            System.out.println("Amount must be positive");
+       }
+    }
+
+         public void withdraw(double amount)
+         throws InsufficientBalanceException,ArithmeticException
+    {
+        if(amount < 0)
+        {
+           throw new ArithmeticException("Withdrawal amount cannot be negative");
+        }
+        if(amount > balance)
+        {
+           throw new InsufficientBalanceException("Insufficient balance");
+        }
+        balance -= amount;
+       System.out.println("Withdrawn" + amount);
+       }
+
+    public void showBalance()
+    {
+       System.out.println("Current balance"+ balance);
+    }
+}
+package banking;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class BankDemo {
+   public static void main(String[] args) {
+      Scanner scanner = new Scanner(System.in);
+      Account account = new Account("1234","John", 1000);
+
+        while(true) {
+          System.out.println("\n Bank Menu");
+          System.out.println("1 Deposit");
+          System.out.println("2 Withdraw");
+          System.out.println("3 Show Balance");
+          System.out.println("4 Exit");
+          System.out.print("Enter your choice");
+
+         int choice = 0;
+        try
+        {
+             choice = scanner.nextInt();
+            }
+        catch(InputMismatchException e)
+        {
+            System.out.println("Invalid input! Please enter a number.");
+            scanner.nextLine();
+            continue;
+            }
+
+            switch(choice)
+            {
+        case 1:
+        System.out.print("Enter deposit amount:");
+        try
+        {
+        double amount = scanner.nextDouble();
+        account.deposit(amount);
+              }
+        catch(InputMismatchException e)
+        {
+        System.out.println("Invalid amount Please enter a number");
+            scanner.nextLine();
+            }
+        break;
+
+        case 2:
+        System.out.print("Enter withdrawal amount:");
+        try
+        {
+        double amount = scanner.nextDouble();
+        account.withdraw(amount);
+                    }
+        catch(InputMismatchException e)
+        {
+        System.out.println("Invalid amount Please enter a number");
+        scanner.nextLine();
+                    }
+        catch(ArithmeticException | InsufficientBalanceException e)
+        {
+        System.out.println(e.getMessage());
+        }
+        break;
+
+        case 3:
+        account.showBalance();
+        break;
+        
+        case 4:
+        System.out.println("Exiting Thank you");
+        scanner.close();
+        System.exit(0);
+        break;
+
+                default:
+                    System.out.println("Invalid choice Please select 1-4");
+                }
+             }  
+                }
+}
